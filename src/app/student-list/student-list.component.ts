@@ -17,7 +17,7 @@ export class StudentListComponent implements OnInit {
               private studentService: StudentService) { }
 
   ngOnInit(): void {
-    this.students = this.studentService.getStudents();
+    this.studentService.getStudents().subscribe(students => this.students = students);
   }
 
   goto(): void {
