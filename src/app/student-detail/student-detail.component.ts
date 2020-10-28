@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { Student } from '../student';
-import { StudentService } from '../student.service';
+import {Store} from '@ngrx/store';
+import {selectorStudent} from '../store/selectors/students.selector';
+import {loadStudent} from '../store/actions/student.action';
+
 
 @Component({
   selector: 'app-student-detail',
@@ -14,18 +17,28 @@ export class StudentDetailComponent implements OnInit {
   errorMessage: string;
 
   constructor(private route: ActivatedRoute,
-              private studentService: StudentService) {
+              private store: Store) {
   }
 
   ngOnInit(): void {
+    this.store.select(selectorStudent).subscribe(student => this.student = student);
     this.route.paramMap.pipe(
       map(paramMap => Number(paramMap.get('id'))),
-      map(id => this.studentService.getStudent(id)),
-    ).subscribe(
-      data => data.subscribe(
-        student => this.student = student,
-      ),
-      error => this.errorMessage = error,
-    );
+      map(id => id)
+      ).subscribe(id => {
+      this.store.dispatch(loadStudent({id}));
+    });
+    // this.route.paramMap.pipe(
+    //   map(paramMap => Number(paramMap.get('id'))),
+    //   map(id => {
+    //     console.log(id);
+    //     return this.store.select(selectorStudent, {id});
+    //   }),
+    // ).subscribe(
+    //   data => data.subscribe(
+    //     student => this.student = student,
+    //   ),
+    //   error => this.errorMessage = error,
+    // );
   }
 }

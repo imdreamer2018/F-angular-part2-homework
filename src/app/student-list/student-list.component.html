@@ -12,7 +12,9 @@
   </tr>
   <app-student *ngFor="let student of students" [student]="student" (selected)="selected = $event"></app-student>
 </table>
-
+<div>
+  <button (click)="loadStudents()">load students</button>
+</div>
 <div>
   <input type="text" [(ngModel)]="target">
   <button (click)="goto()">goto</button>
